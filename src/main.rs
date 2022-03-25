@@ -6,7 +6,7 @@ use std::path::Path;
 use parse_between::{extract_data_extended, Config};
 
 
-/// Read file/stdin and find all staring with '<pjd>' and ending with '</pjd>'
+/// Small utility which extracts data between some prefix and suffix
 #[derive(Parser, Debug)]
 #[clap(author, version, about, long_about = None)]
 struct Args {
