@@ -3,23 +3,23 @@ pub struct Config {
     pub suffix: String,
     pub keep_prefix: bool,
     pub keep_suffix: bool,
-    pub trim: bool
+    pub trim: bool,
 }
 
 /// Extract data between `opening_tag` and `closing_tag`
-pub fn extract_data(source: &String, opening_tag: &str, closing_tag: &str) -> Vec<String> {
-    let config = Config{
+pub fn extract_data(source: &str, opening_tag: &str, closing_tag: &str) -> Vec<String> {
+    let config = Config {
         prefix: opening_tag.to_string(),
         suffix: closing_tag.to_string(),
         keep_prefix: true,
         keep_suffix: true,
-        trim: false
+        trim: false,
     };
     extract_data_extended(source, config)
 }
 
 /// Extract data between `prefix` and `suffix`
-pub fn extract_data_extended(source: &String, config: Config) -> Vec<String> {
+pub fn extract_data_extended(source: &str, config: Config) -> Vec<String> {
     let opening_tag_len = config.prefix.len();
     let closing_tag_len = config.suffix.len();
     let prefix = config.prefix.as_str();
@@ -64,7 +64,6 @@ pub fn extract_data_extended(source: &String, config: Config) -> Vec<String> {
         .collect()
 }
 
-
 #[test]
 fn test_parser_trees() {
     let src = String::from("<pre>1<pre>2<pre>33</pre>2</pre><pre>44</pre>1</pre>");
@@ -82,12 +81,12 @@ fn test_parser_trees() {
 
 #[test]
 fn test_parser_trees_keep_all() {
-    let config = Config{
+    let config = Config {
         prefix: String::from("<pre>"),
         suffix: String::from("</pre>"),
         keep_prefix: true,
         keep_suffix: true,
-        trim: false
+        trim: false,
     };
     let src = String::from("<pre>1<pre>2<pre>33</pre>2</pre><pre>44</pre>1</pre>");
     let res = crate::extract_data_extended(&src, config);
@@ -104,12 +103,12 @@ fn test_parser_trees_keep_all() {
 
 #[test]
 fn test_parser_trees_stripped() {
-    let config = Config{
+    let config = Config {
         prefix: String::from("<pre>"),
         suffix: String::from("</pre>"),
         keep_prefix: false,
         keep_suffix: false,
-        trim: false
+        trim: false,
     };
     let src = String::from("<pre>1<pre>2<pre>33</pre>2</pre><pre>44</pre>1</pre>");
     let res = crate::extract_data_extended(&src, config);
@@ -126,12 +125,12 @@ fn test_parser_trees_stripped() {
 
 #[test]
 fn test_parser_trees_opening() {
-    let config = Config{
+    let config = Config {
         prefix: String::from("<pre>"),
         suffix: String::from("</pre>"),
         keep_prefix: true,
         keep_suffix: false,
-        trim: false
+        trim: false,
     };
     let src = String::from("<pre>1<pre>2<pre>33</pre>2</pre><pre>44</pre>1</pre>");
     let res = crate::extract_data_extended(&src, config);
@@ -146,15 +145,14 @@ fn test_parser_trees_opening() {
     );
 }
 
-
 #[test]
 fn test_parser_trees_closing() {
-    let config = Config{
+    let config = Config {
         prefix: String::from("<pre>"),
         suffix: String::from("</pre>"),
         keep_prefix: false,
         keep_suffix: true,
-        trim: false
+        trim: false,
     };
     let src = String::from("<pre>1<pre>2<pre>33</pre>2</pre><pre>44</pre>1</pre>");
     let res = crate::extract_data_extended(&src, config);

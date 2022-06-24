@@ -1,10 +1,9 @@
 use clap::Parser;
+use parse_between::{extract_data_extended, Config};
 use std::fs::File;
 use std::io;
 use std::io::prelude::Read;
 use std::path::Path;
-use parse_between::{extract_data_extended, Config};
-
 
 /// Small utility which extracts data between some prefix and suffix
 #[derive(Parser, Debug)]
@@ -36,18 +35,18 @@ struct Args {
 
 fn read(f: &mut dyn Read) -> String {
     let mut src = String::new();
-    let msg = format!("Error while reading");
-    f.read_to_string(&mut src).expect(msg.as_str());
+    let msg = "Error while reading".to_string();
+    f.read_to_string(&mut src)
+        .unwrap_or_else(|_| panic!("{}", msg));
     src.trim().to_string()
 }
 
-
-fn read_file(path: &String) -> String {
+fn read_file(path: &str) -> String {
     if !Path::new(path).exists() {
         panic!("File {} does not exist", path);
     }
     let msg = format!("Error while reading file '{}'", path);
-    let mut f = File::open(path).expect(msg.as_str());
+    let mut f = File::open(path).unwrap_or_else(|_| panic!("{}", msg));
     read(&mut f)
 }
 
@@ -55,21 +54,21 @@ fn main() {
     let args = Args::parse();
     let source = match args.input {
         None => read(&mut io::stdin()),
-        Some(src) => read_file(&src)
+        Some(src) => read_file(&src),
     };
     if source.is_empty() {
         return;
     }
-    let config = Config{
+    let config = Config {
         prefix: args.prefix,
         suffix: args.suffix,
         keep_prefix: args.keep_prefix,
         keep_suffix: args.keep_suffix,
-        trim: false
+        trim: false,
     };
     for piece in extract_data_extended(&source, config) {
-        println!("{}", ">>>");
+        println!(">>>");
         println!("{piece}");
-        println!("{}", "<<<");
+        println!("<<<");
     }
 }
